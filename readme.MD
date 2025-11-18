@@ -4,10 +4,10 @@
 A starter scaffolding repo for greenfield projects. It ships a VS Code Dev Container backed by Docker Compose, a PostgreSQL service, and optional dotfile mounts so you can get coding quickly with a consistent toolchain.
 
 ## What You Get
-- Ubuntu 22.04 base with Node.js 24, Git, Ripgrep, fd, tmux, and Neovim preinstalled.
-- Non-root `dev` user with passwordless sudo.
+- Ubuntu 22.04 base with Node.js 24, Git, Ripgrep, fd, tmux, fzf, and Neovim preinstalled.
+- Runs as root inside the devcontainer (no non-root user created).
 - PostgreSQL service (version configurable) plus `dbmate` helper container.
-- Optional dotfile mounts for SSH keys, Zsh, Neovim, and Git config.
+- Dotfile mounts for SSH keys, Zsh, Neovim, and Git config (default to your host paths).
 - Workspace folder inside the container set by `APP_DIR` (default `app`).
 
 ## Prerequisites
@@ -28,9 +28,10 @@ Copy `.env.example` to `.env` and adjust. Key variables:
 | `DB_NAME` | Yes | Database name created at startup. |
 | `DB_PORT` | Yes | Host port for Postgres (unique per project if you run multiple). |
 | `POSTGRES_HOST_AUTH_METHOD` | Yes | Auth mode; defaults to `trust` for local dev. |
-| `ZSHRC_PATH` | Optional | Host path to `.zshrc` to mount into the container. |
-| `NEOVIM_CONFIG_PATH` | Optional | Host path to Neovim config. |
-| `GITCONFIG_PATH` | Optional | Host path to `.gitconfig`. |
+| `SSH_PATH` | Yes | Host path to `.ssh` (defaults to `${HOME}/.ssh`). Must exist for SSH to work in the container. |
+| `ZSHRC_PATH` | Yes | Host path to `.zshrc` (defaults to `${HOME}/.zshrc`). Required because the container shells into zsh. |
+| `NEOVIM_CONFIG_PATH` | Yes | Host path to Neovim config (defaults to `${HOME}/.config/nvim`). |
+| `GITCONFIG_PATH` | Optional | Host path to `.gitconfig` (defaults to `${HOME}/.gitconfig`). |
 | `PGADMIN_*` | Optional | Uncomment in `.env` and `docker-compose.yml` if you enable pgAdmin service. |
 
 ## Start a New Project from Scratch
@@ -45,5 +46,5 @@ Copy `.env.example` to `.env` and adjust. Key variables:
 - To start services manually without VS Code: `docker compose up` (uses `docker-compose.yml`).
 - Database URL inside the dev network: `postgres://<DB_USER>:<DB_PASSWORD>@postgres:5432/<DB_NAME>?sslmode=disable`.
 - The `dbmate` service runs `dbmate up` on start; add migrations under a location recognized by dbmate (defaults to `/app/db/migrations`) or disable the service if unused.
-- Dotfile mounts (`ZSHRC_PATH`, `NEOVIM_CONFIG_PATH`, `GITCONFIG_PATH`) are optional; set them to real host paths or leave defaults/empty to avoid mount errors.
+- Dotfile mounts (`SSH_PATH`, `ZSHRC_PATH`, `NEOVIM_CONFIG_PATH`, `GITCONFIG_PATH`) default to your host paths; ensure those files/dirs exist so zsh/SSH/Neovim and git work in the container.
 - To enable per-project pgAdmin, uncomment the `pgadmin` service in `docker-compose.yml` and set `PGADMIN_*` vars plus an open `PGADMIN_PORT`.

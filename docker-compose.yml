@@ -5,7 +5,7 @@ services:
     working_dir: /${APP_DIR}
     build:
       context: .
-      dockerfile: .devcontainer/Dockerfile
+      dockerfile: Dockerfile
 
     ports:
       - "${APP_PORT}:3000"

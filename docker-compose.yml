@@ -12,11 +12,12 @@ services:
 
     volumes:
       - .:/${APP_DIR}:cached
+      - ~/.ssh:/root/.ssh:ro
       # Host dotfiles
-      - ${SSH_PATH:-${HOME}/.ssh}:/root/.ssh:ro
       - ${ZSHRC_PATH:-${HOME}/.zshrc}:/root/.zshrc:ro
       - ${NEOVIM_CONFIG_PATH:-${HOME}/.config/nvim}:/root/.config/nvim:ro
       - ${GITCONFIG_PATH:-${HOME}/.gitconfig}:/root/.gitconfig:ro
+      - ${CODEX_PATH:-/dev/null}:/root/.codex
       # Persist Neovim data/cache/state so plugins are not reinstalled each time
       - nvim-data:/root/.local/share/nvim
       - nvim-state:/root/.local/state/nvim
